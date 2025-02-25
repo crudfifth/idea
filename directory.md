@@ -3,6 +3,7 @@
 yysk-client-fw/
 ├─ src/
 │   ├─ validation/                           # 入力チェック機能
+│   │   ├─ index.ts
 │   │   ├─ RequiredFieldValidator.ts         # 必須フィールドのバリデーション
 │   │   ├─ EmailValidator.ts                 # メール形式のバリデーション
 │   │   ├─ ValidationRules.ts                # その他のバリデーションルール
@@ -12,6 +13,7 @@ yysk-client-fw/
 │   │       └─ ValidationRules.test.ts
 │   │       
 │   ├─ exception/                            # 例外クラス
+│   │   ├─ index.ts
 │   │   ├─ CustomError.ts                    # カスタムエラークラス
 │   │   ├─ ValidationError.ts                # バリデーションエラー
 │   │   └─ __tests__/                        # テスト
@@ -19,6 +21,7 @@ yysk-client-fw/
 │   │       └─ ValidationError.test.ts
 │   │       
 │   ├─ exceptionhandler/                     # 例外ハンドリング機能
+│   │   ├─ index.ts
 │   │   ├─ GlobalExceptionHandler.ts         # グローバル例外ハンドラー
 │   │   ├─ ErrorHandler.ts                   # エラーハンドリングロジック
 │   │   └─ __tests__/                        # テスト
@@ -26,16 +29,12 @@ yysk-client-fw/
 │   │       └─ ErrorHandler.test.ts
 │   │       
 │   ├─ messages/                             # メッセージ管理機能
+│   │   ├─ index.ts
 │   │   ├─ MessageUtil.ts                    # メッセージ処理ユーティリティ
 │   │   └─ __tests__/                        # テスト
 │   │       └─ MessageUtil.test.ts
 │   │       
-│   └─ utils/                                # 汎用的なユーティリティ関数
-│       ├─ DateUtil.ts                       # 日付処理ユーティリティ
-│       ├─ StorageUtil.ts                    # ストレージ操作関数
-│       └─ __tests__/                        # テスト
-│           ├─ DateUtil.test.ts
-│           └─ StorageUtil.test.ts
+│   └─ index.ts                              # 各ディレクトリにある機能を一括でエクスポート
 │
 └─ README.md                                 # プロジェクト説明
 ```
@@ -103,17 +102,26 @@ yysk-client/                               # 業務リポジトリ
 │   │       └── Button.stories.ts          # Storybookの定義
 │   │
 │   ├── usecases/                          # 業務単位で分類された機能群（予診情報管理、請求）
-│   │   ├── medical_record/                # 予診情報管理業務機能
-│   │   │   └── ユースケース/
-│   │   │       ├── views/                 # ビューコンポーネント
-│   │   │       │   ├── __tests__/         # ビューテスト
-│   │   │       │   ├── ~View.vue          # ビュー
-│   │   │       │   └── ~View.stories.ts   # ストーリーブック用ビュー
-│   │   │       │
-│   │   │       └── services/              # 業務サービス
-│   │   │           └── ~Service.ts        # 各業務サービスファイル
-│   │   ├── invoicing/                     # 請求業務機能
-│   │   │   └── ユースケース/
+│   │   ├── vaccination/                   # 予診情報管理業務機能
+│   │   │   ├── (例)recipient/             # 接種対象者情報管理(ユースケース名)
+│   │   │   │   ├── views/                 # ビューコンポーネント
+│   │   │   │   │   ├── __tests__/         # ビューテスト
+│   │   │   │   │   ├── ~View.vue          # ビュー
+│   │   │   │   │   └── ~View.stories.ts   # ストーリーブック用ビュー
+│   │   │   │   │
+│   │   │   │   └── services/              # 業務サービス
+│   │   │   │       └── ~Service.ts        # 各業務サービスファイル
+│   │   │   │
+│   │   │   ├── (例)questionnaire/         # 予診情報管理(ユースケース名)
+│   │   │   │   ├── views/                 # ビューコンポーネント
+│   │   │   │   │   ├── __tests__/         # ビューテスト
+│   │   │   │   │   ├── ~View.vue          # ビュー
+│   │   │   │   │   └── ~View.stories.ts   # ストーリーブック用ビュー
+│   │   │   │   │
+│   │   │   │   └── services/              # 業務サービス
+│   │   │   │       └── ~Service.ts        # 各業務サービスファイル
+│   │   │   │
+│   │   │   └── (例)record/                # 接種記録管理(ユースケース名)
 │   │   │       ├── views/                 # ビューコンポーネント
 │   │   │       │   ├── __tests__/         # ビューテスト
 │   │   │       │   ├── ~View.vue          # ビュー
@@ -122,9 +130,22 @@ yysk-client/                               # 業務リポジトリ
 │   │   │       └── services/              # 業務サービス
 │   │   │           └── ~Service.ts        # 各業務サービスファイル
 │   │   │
+│   │   │
+│   │   ├── billing/                     # 請求業務機能
+│   │   │   ├── ユースケース/
+│   │   │   │   ├── views/                 # ビューコンポーネント
+│   │   │   │   │   ├── __tests__/         # ビューテスト
+│   │   │   │   │   ├── ~View.vue          # ビュー
+│   │   │   │   │   └── ~View.stories.ts   # ストーリーブック用ビュー
+│   │   │   │   │
+│   │   │   │   └── services/              # 業務サービス
+│   │   │   │       └── ~Service.ts        # 各業務サービスファイル
+│   │   │
 │   │   └── common/                        # 共通処理
+│   │       ├── (例)login/                 # ログイン
+│   │       ├── (例)user/                  # アカウント管理
 │   │       ├── repositories/              # API リポジトリ層
-│   │       │   └── ~Repository.ts/        # リポジトリファイル
+│   │       │   └── ~Repository.ts         # リポジトリファイル
 │   │       ├── router/                    # ルーティング設定
 │   │       ├── stores/                    # 状態管理
 │   │       │   └── ~Store.ts              # 各ストアファイル
