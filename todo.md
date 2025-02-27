@@ -3,7 +3,7 @@ https://carparking.jp/detail/1087662/
 
 イベント企画をかためる
 
-TOTOプロフのリンクを結ぶ・スライドショー等
+[HTTrackで移動](https://toto-social-link.carrd.co/)
 
 WSLセットアップガイド作成
 
