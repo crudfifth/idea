@@ -74,6 +74,9 @@ typescriptと判断されずjavascriptと判断されてしまうため、eslint
 
 
 
+http://gitlab.yysk.cicd.local/architecture-team/yysk-client-fw/-/merge_requests
+
+
 
 
 
