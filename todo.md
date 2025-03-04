@@ -1,16 +1,9 @@
 あとで契約する
 https://carparking.jp/detail/1087662/
 
-イベント企画をかためる
-
-toto-profile整理
-
 WSLセットアップガイド作成
 
 Evernoteに環境構築手順に関する内容を随時記載しておいて、新規PCがきたときに設定を再現できるようにする（CursorのオートコンプリートをOFFとか）。
-
-http://gitlab.yysk.cicd.local/architecture-team/yysk-client-fw/-/merge_requests
-
 
 ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 まさに 「AIコンシェルジュ」 とか 「AIエージェントアシスタント」 の領域ですね。
@@ -60,21 +53,6 @@ IoTデバイス制御
 第三段階: IoT連携 & キャラクター表現強化（VRM or Live2D）
 これ、最終的には 「未来のAIアシスタント」 みたいな感じになりそうですね！
 実際に開発進めるなら、どの部分から手をつけるか考えてみてもいいかも！
-＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾＾
-先ほどご相談させていただきましたが、コミットを行うようにするため変更した内容の確認および、ベース資材の更新をお願いしたいです。
-（そもそもベース資材の作成/検討が高橋さんでなかったら、すみません。）
- 
-事象としましてはtypescriptのファイルをコミットしようとするとESLintで引っ掛かり、コミットできませんでした。
-typescriptと判断されずjavascriptと判断されてしまうため、eslint.config.jsの修正、プラグインの追加を行いコミットは解決されました。
- 
-他の方も同様な問題で引っ掛かると思うため、問題なければ上記の対応について、ベース（develop）を更新いただければと思います。
- 
-以下は追加内容です。作業用ブランチ（feature/client_s_08_ajaxclient）で試したものです。
-![image](https://github.com/user-attachments/assets/9734ce8f-4447-474f-b37f-0b0b2ee0d135)
-
-
-
-http://gitlab.yysk.cicd.local/architecture-team/yysk-client-fw/-/merge_requests
 
 
 
