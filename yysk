@@ -1,0 +1,9 @@
+const routes = [
+  {
+    path: "/login",
+    name: "LoginPage",
+    component: () => import("~/Login.vue"),
+    meta: { screenId: "SC_99999_01" }
+  }
+];
+
