@@ -2,3 +2,240 @@
 デプロイはコメントにしています。
 パイプラインのnpmのコマンドはwikiに添付したプロジェクトのpackage.jsonのものを当てています。
 修正が必要であれば李家、山田さんの方に連絡ください。
+
+# TypeScript + Vitest による単体テスト実装手順
+
+本ドキュメントでは、**TypeScript** 環境において **Vitest + Vue Testing Library + MSW** を使用して、**単体テストを実装する方法** を説明します。
+
+## 1. 単体テストの基本構成
+
+単体テストは **`__tests__` ディレクトリ** に配置し、`.test.ts` というファイル名で作成します。  
+コンポーネント単位でテストを実装し、**Vue Testing Library** を用いて UI の振る舞い検証を行う。
+
+### テストディレクトリ構成（事例）
+
+src/  
+└── components/   
+&emsp;&emsp;&emsp;└── button/  
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;├── Button.vue  
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;└── \_\_tests\_\_/  
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;└── Button.test.ts  
+
+## 2. テストの基本的な書き方
+
+### 2.1 コンポーネントの作成
+📄 src/components/App.vue
+```html
+<!-- このような親コンポがあるとしたときの例 -->
+<template>
+  <div>
+    <Button label="クリック" :primary="true" />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+import Button from "./components/Button.vue"; // 子コンポーネントをインポート
+</script>
+``` 
+
+📄 `src/components/Button.vue`
+```typescript
+<!-- 下記はボタンのコンポーネント例 -->
+<template>
+  <!-- 処理内容: primary が true の場合、primary クラスを適用 > クリック時に onClick メソッドを実行 -->
+
+  <!-- 4. button 要素が生成され、primary プロパティに応じてクラスが適用される -->
+  <button :class="{ primary: primary }" @click="onClick">{{ label }}</button>
+</template>
+
+<script setup lang="ts">
+import { defineProps, defineEmits } from "vue";
+
+// 1.プロパティを定義（ラベルと primary フラグ）
+defineProps<{ label: string; primary?: boolean }>();
+
+// 2.クリックイベントを親に通知
+const emit = defineEmits(["click"]);
+
+// 3.クリックイベントを発火
+const onClick = () => {
+  emit("click"); 
+};
+</script>
+
+<style scoped>
+/* primary クラスが適用されたボタンのスタイル */
+.primary {
+  background-color: blue;
+  color: white;
+}
+</style>
+```
+
+### 2.2 単体テストの実装
+
+📄 `src/components/button/__tests__/Button.test.ts`
+```typescript
+// テストモジュールをインポート
+import { render, screen } from "@testing-library/vue"; // Vue Testing Library を使用してコンポーネントをレンダリング
+import userEvent from "@testing-library/user-event"; // ユーザーの操作をシミュレートするためのライブラリ
+import { describe, it, expect } from "vitest"; // Vitest のテスト関数をインポート
+import Button from "../Button.vue"; // テスト対象をインポート
+
+describe("Button.vue", () => {
+
+  // ボタンが指定されたラベルで表示されることを確認
+  it("指定されたラベルのボタンをレンダリングする", () => {
+    render(Button, { props: { label: "Click me" } }); // ボタンをレンダリング
+    expect(screen.getByText("Click me")).toBeInTheDocument(); // 指定されたラベルのボタンが存在することを検証
+  });
+
+  // primary プロパティが true の場合、ボタンに primary クラスが適用されることを確認
+  it("primary プロパティが true の場合に primary クラスが適用される", () => {
+    render(Button, { props: { label: "Primary", primary: true } }); // primary プロパティ付きでボタンをレンダリング
+    const button = screen.getByText("Primary"); // ボタン要素を取得
+    expect(button).toHaveClass("primary"); // ボタンに primary クラスが適用されていることを確認
+  });
+
+  // ボタンがクリックされたときに click イベントの発火を確認
+  it("クリック時に click イベントを発火する", async () => {
+    const { emitted } = render(Button, { props: { label: "Click me" } }); // ボタンをレンダリング
+    await userEvent.click(screen.getByText("Click me")); // ボタンをクリック
+    expect(emitted()).toHaveProperty("click"); // click イベントが発火したことを検証
+  });
+});
+
+```
+
+### **上記テストのポイント**
+- `render(Component, { props })` → テスト対象のコンポーネントを仮想DOMにレンダリング
+- `screen.getByText("テキスト")` → 指定したテキストが存在するか確認
+- `userEvent.click()` → ユーザー操作をシミュレート
+- `expect(emitted()).toHaveProperty("click")` → `click` イベントが発生したことを検証
+
+## 3. API通信を含むテスト（MSWを利用）
+
+### 3.1 APIリクエストを行うコンポーネントの作成
+
+📄 `src/components/UserList.vue`
+```Typescript
+<template>
+  <div>
+    <!-- ユーザーデータを取得するボタン -->
+    <button @click="fetchUsers">Load Users</button>
+    
+    <ul>
+      <!-- 取得したユーザーデータをリストとして表示 -->
+      <li v-for="user in users" :key="user.id">{{ user.name }}</li>
+    </ul>
+
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+
+// 1. ユーザーリストのデータを保持するリアクティブ変数
+const users = ref<{ id: number; name: string }[]>([]);
+
+// 2. APIからユーザーデータを取得する関数
+const fetchUsers = async () => {
+  try {
+    // 2-1. APIリクエストを実行（非同期処理）
+    const response = await fetch("/api/users");
+    
+    // 2-2. ステータスコードをチェック
+    if (!response.ok) {
+      throw new Error("Failed to fetch users");
+    }
+
+    // 2-3. 取得したデータを users に格納
+    users.value = await response.json();
+  } catch (error) {
+    console.error("ユーザ取得エラー", error);
+  }
+};
+</script>
+
+```
+
+### 3.2 MSWでAPIモックを設定
+
+📄 `src/mocks/handlers.ts`
+```typescript
+import { http } from "msw";
+
+// モックハンドラーの定義
+export const handlers = [
+
+  // "/api/users" へのGETリクエストをインターセプト
+  http.get("/api/users", () => {
+    
+    // モックレスポンスを返す
+    return new Response(
+      JSON.stringify([
+        { id: 1, name: "山田" },
+        { id: 2, name: "田中" }
+      ]),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+      }
+    );
+  }),
+];
+```
+
+📄 `src/mocks/server.ts`
+```typescript
+import { setupServer } from "msw/node"; // Node.js 環境用のMSWサーバーをインポート
+import { handlers } from "./handlers"; // 定義済みAPIハンドラーをインポート
+
+// `handlers` に定義されたAPIエンドポイントのモックを登録
+export const server = setupServer(...handlers);
+```
+
+### 3.3 APIを含むテストの実装
+
+📄 `src/components/__tests__/UserList.test.ts`
+```typescript
+import { render, screen } from "@testing-library/vue";
+import userEvent from "@testing-library/user-event";
+import { describe, it, expect, beforeAll, afterEach, afterAll } from "vitest";
+import UserList from "../UserList.vue";
+import { server } from "../../mocks/server";
+
+// MSWのセットアップ
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
+
+describe("UserList.vue", () => {
+  it("fetches and displays users", async () => {
+    render(UserList);
+    await userEvent.click(screen.getByText("Load Users"));
+
+    expect(await screen.findByText("Alice")).toBeInTheDocument();
+    expect(screen.getByText("Bob")).toBeInTheDocument();
+  });
+});
+```
+
+### **上記テストのポイント**
+- `server.listen()` → テスト前にMSWを起動
+- `await screen.findByText("Alice")` → 非同期でデータがレンダリングされるのを待機
+- `server.resetHandlers()` → テストごとにMSWの状態をリセット
+
+## 4. テストの実行
+
+単体テストを実行するには、以下のコマンドを実行します。
+
+```bash
+npm run test
+```
+- `npm run test` → すべてのテストを実行
+- `npm run test:watch` → 変更を監視してテストを自動実行
+
+またプロジェクトルールとしてGitフックによりPreコミットによりテストが走る設定になっています。
+
