@@ -1,9 +1,4 @@
-const routes = [
-  {
-    path: "/login",
-    name: "LoginPage",
-    component: () => import("~/Login.vue"),
-    meta: { screenId: "SC_99999_01" }
-  }
-];
-
+いちおう、パイプラインは設定しているのでpushするとGitLab Runner上でビルドテストは動きます。
+デプロイはコメントにしています。
+パイプラインのnpmのコマンドはwikiに添付したプロジェクトのpackage.jsonのものを当てています。
+修正が必要であれば李家、山田さんの方に連絡ください。
