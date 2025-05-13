@@ -1,4 +1,5 @@
 http://gitlab.yysk.cicd.local/takahashitnm/poc
+http://gitlab.yysk.cicd.local/takahashitnm/poc
 あとで契約する
 https://carparking.jp/detail/1087662/
 
