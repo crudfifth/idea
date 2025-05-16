@@ -1,3 +1,20 @@
+先ほども話した「Storeの永続化でBASE64を2回かけて難読化する」って話があったと思うんですが、  
+それで少し調べていたところ `javascript-obfuscator` というライブラリがありました。
+
+これは、ビルド後のJavaScriptファイルを対象に、コード全体を自動的に難読化できるものです。  
+BASE64のような単純な文字列変換よりも、構文ごと崩してくれるので可読性がかなり下がります。  
+例えば変数名が全部 `_0xabc123` みたいな形に置き換わったりして、  
+ぱっと見で内容が分からなくなるレベルです。
+
+もちろんセキュリティ対策としては「気休めレベル」ではあるんですが、   
+BASE64の代わりにこれを使うのも一つの手かなと思いました。
+
+参考: 
+・https://www.npmjs.com/package/javascript-obfuscator
+・https://qiita.com/u83unlimited/items/970f819d1fafa325bfbf
+・https://yururi-do.com/javascript-obfuscator-2022/
+・https://scan.netsecurity.ne.jp/article/2024/09/25/51660.html
+
 https://pmwbv-portalv001.almcloud.nttdata.com/ads/7143tfcDmy/yysk/_workitems/edit/7303/
 
 http://gitlab.yysk.cicd.local/takahashitnm/poc
