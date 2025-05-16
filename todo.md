@@ -1,3 +1,5 @@
+https://pmwbv-portalv001.almcloud.nttdata.com/ads/7143tfcDmy/yysk/_workitems/edit/7303/
+
 http://gitlab.yysk.cicd.local/takahashitnm/poc
 http://gitlab.yysk.cicd.local/takahashitnm/poc
 あとで契約する
