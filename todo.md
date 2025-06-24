@@ -1,3 +1,61 @@
+```
+  "overrides": {
+    "storybook": "$storybook",
+    "glob": "^10.4.5",
+    "rimraf": "^5.0.10"
+  }
+  ```
+PS C:\Users\taashitnm\Documents\poc> npm ls inflight
+>> npm ls rimraf
+>> npm ls glob
+>>
+poc@1.0.0 C:\Users\taashitnm\Documents\poc
+├─┬ reg-keygen-git-hash-plugin@0.14.3
+│ └─┬ reg-suit-util@0.14.3
+│   └─┬ glob@7.2.3
+│     └── inflight@1.0.6
+└─┬ reg-suit@0.14.4
+  └─┬ reg-suit-core@0.14.4
+    └─┬ reg-cli@0.18.10
+      ├─┬ del@6.1.1
+      │ └─┬ rimraf@3.0.2
+      │   └─┬ glob@7.2.3
+      │     └── inflight@1.0.6 deduped
+      └─┬ glob@7.2.3
+        └── inflight@1.0.6 deduped
+
+poc@1.0.0 C:\Users\taashitnm\Documents\poc
+└─┬ reg-suit@0.14.4
+  └─┬ reg-suit-core@0.14.4
+    ├─┬ reg-cli@0.18.10
+    │ └─┬ del@6.1.1
+    │   └── rimraf@3.0.2
+    └── rimraf@5.0.10
+
+poc@1.0.0 C:\Users\taashitnm\Documents\poc
+├─┬ @testing-library/vue@8.1.0
+│ └─┬ @vue/test-utils@2.4.6
+│   └─┬ js-beautify@1.15.4
+│     └── glob@10.4.5 deduped
+├─┬ @vitest/coverage-istanbul@3.1.4
+│ └─┬ test-exclude@7.0.1
+│   └── glob@10.4.5
+├─┬ reg-keygen-git-hash-plugin@0.14.3
+│ └─┬ reg-suit-util@0.14.3
+│   └── glob@7.2.3
+├─┬ reg-suit@0.14.4
+│ └─┬ reg-suit-core@0.14.4
+│   ├─┬ reg-cli@0.18.10
+│   │ ├─┬ del@6.1.1
+│   │ │ └─┬ rimraf@3.0.2
+│   │ │   └── glob@7.2.3
+│   │ └── glob@7.2.3
+│   └─┬ rimraf@5.0.10
+│     └── glob@10.4.5 deduped
+└─┬ tailwindcss@3.4.17
+  └─┬ sucrase@3.35.0
+    └── glob@10.4.5 deduped
+
 先ほども話した「Storeの永続化でBASE64を2回かけて難読化する」って話があったと思うんですが、  
 それで少し調べていたところ `javascript-obfuscator` というライブラリがありました。
 
