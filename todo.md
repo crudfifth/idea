@@ -1,4 +1,18 @@
 ```
+PS C:\Users\taashitnm\Documents\poc> npm  i
+npm warn deprecated @storybook/jest@0.2.3: In Storybook 8, this package functionality has been integrated to a new package called @storybook/test, which uses Vitest APIs for an improved experience. When upgrading to Storybook 8 with 'npx storybook@latest upgrade', you will get prompted and will get an automigration for the new package. Please migrate when you can.
+npm warn deprecated @storybook/testing-library@0.2.2: In Storybook 8, this package functionality has been integrated to a new package called @storybook/test, which uses Vitest APIs for an improved experience. When upgrading to Storybook 8 with 'npx storybook@latest upgrade', you will get prompted and will get an automigration for the new package. Please migrate when you can.
+npm warn deprecated @storybook/expect@28.1.3-5: In Storybook 8, this package functionality has been integrated to a new package called @storybook/test, which uses Vitest APIs for an improved experience. When upgrading to Storybook 8 with 'npx storybook@latest upgrade', you will get prompted and will get an automigration for the new package. Please migrate when you can.
+
+added 1044 packages, and audited 1045 packages in 2m
+
+200 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+PS C:\Users\taashitnm\Documents\poc> 
+```
+```
   "overrides": {
     "storybook": "$storybook",
     "glob": "^10.4.5",
