@@ -1,153 +1,209 @@
+
+
+---------------------------------------------------------------------------------------------------------------------------
+予防接種事務デジタル化に係る
+予診情報・予防接種記録管理／請求支払システムの
+設計・開発及び運用・保守業務一式
+
+ソフトウェアフレームワーク機能設計書
+
+FW_S_CLIENT_11
+メッセージ管理
+
+第1.1版
+ 
+改版履歴
+版数	制改訂
+日付	変更
+箇所	変更理由・変更内容	変更者	承認者
+1.0	2025/03/24	-	初版発行	NTTD米山	NTTD 馬場
+1.1	2025/05/02	-	詳細設計の反映	NTTD米山	NTTD 馬場
+					
+					
+					
+ 
+目次
+1.	機能概要	1
+1.1.	概要	1
+1.2.	API一覧	1
+2.	機能実現方式	1
+2.1.	利用ライブラリ	1
+2.2.	コンポーネント構成	2
+2.3.	実現方式	2
+3.	機能詳細	3
+3.1.	API仕様	3
+3.1.1.	メッセージ管理	3
+3.2.	プロパティ／環境変数	7
+4.	利用例	8
+4.1.	アプリケーション起動時のメッセージ定義読み込み	8
+4.2.	コンポーネントでのメッセージ取得	9
+5.	その他	10
+5.1.	システム基盤とのインタフェース	10
+5.2.	利用するDBテーブル	10
+
+ 
+ 
+1.	機能概要
+1.1.	概要
+エラーメッセージ・通知メッセージ・確認ダイアログなど、アプリケーション内で使用されるメッセージを統一的に管理する。本機能では、定義されたメッセージIDを基に、アプリケーション内で使用するメッセージを統一的に取得できるようにする。
+
+1.2.	API一覧
+本機能が提供するAPIの一覧を以下に示す。
+
+API名（論理）	API名（物理）	説明
+メッセージ定義読込	Message.load<T extends { [key: string]: string }>(messages: T): voidメソッド
+インスタンス生成時の初期化処理をする。
+messagesに使用するメッセージの定義を設定する。
+メッセージ取得	Message.getMessage(messageId: string, replaceElements?: string[]): stringメソッド
+メッセージIDに紐づくメッセージ値を取得し返却する。
+
+2.	機能実現方式
+2.1.	利用ライブラリ
+なし。
+
+ 
+2.2.	コンポーネント構成
+本機能を構成する主要コンポーネントとその関連を以下に示す。
+
+	Messageパッケージコンポーネント図
+ 
+
+・	コンポーネント一覧
+パッケージ	コンポーネント	説明
+messages	Message	メッセージ管理のためのクラス。シングルトンパターンで実装され、アプリケーション全体で1つのインスタンスを共有する。
+
+2.3.	実現方式
+2.4.	Messageクラス
+シングルトンパターンで実装するため、コンストラクタはprivateアクセス修飾子を付与し定義することで外部からのインスタンス生成を制限する。
+
+
+ 
+3.	機能詳細
+3.1.	API仕様
+本機能が提供するAPIの仕様を以下に示す。
+
+3.1.1.	メッセージ管理
+(1)	Messageクラス
+本機能が提供するメソッドの一覧を以下に示す。
+メソッド名	メソッド概要	I/O	論理項目名	物理項目名	データ型
+メッセージ定義読込	Message.load	I	メッセージリスト	messages	T extends { [key: string]: string }
+		O	―	―	―
+メッセージ取得	Message. getMessage	I	メッセージID	messageId	string
+
+		I	置換文字列配列	replaceElements	string[]
+		O	メッセージ	―	string
+
+ 
+①	Message.load<T extends { [key: string]: string }>(messages: T): voidメソッド
+staticメソッドとして定義され、インスタンスを生成せずに呼び出すことができる。
+(ア)	事前条件
+なし。
+
+(イ)	入力情報
+論理項目名	物理項目名	データ型	備考
+メッセージリスト	messages	T	使用するメッセージの定義を設定する。
+
+(ウ)	出力情報
+なし。
+
+(エ)	処理ロジック
+i.	インスタンスの生成
+引数で受け取ったオブジェクトを使用して自己インスタンス化を行い、staticなインスタンス変数instanceに保持する。
+
+(オ)	例外
+なし。
+ 
+②	Message.getMessage(messageId: string, replaceElements?: string[]): stringメソッド
+staticメソッドとして定義され、インスタンスを生成せずに呼び出すことができる。
+(ア)	事前条件
+なし。
+
+(イ)	入力情報
+論理項目名	物理項目名	データ型	備考
+メッセージID	messageId	keyof T	コンストラクタで設定されたオブジェクトのキーのみを許容する型
+置換文字列配列	replaceElements	string []	省略可能
+
+(ウ)	出力情報
+論理項目名	物理項目名	データ型	備考
+メッセージ	-	string	置換処理済みのメッセージ文字列
+
+(エ)	処理ロジック
+i.	インスタンス生成確認
+インスタンスが生成されていない場合、メッセージIDとプレースホルダーを返却する。
+また、開発向けにwarnログでメッセージを出力する。
+
+ii.	メッセージIDの存在確認
+指定されたメッセージIDが存在しない場合、メッセージIDとプレースホルダーを返却する。
+また、開発向けにwarnログでメッセージを出力する。
+
+iii.	メッセージの取得
+指定されたメッセージIDに紐づくメッセージを、インスタンス変数instanceのmessagesから取得する。
+
+iv.	プレースホルダーの置換
+置換文字列配列が指定されている場合、メッセージ内の{0}, {1}...のプレースホルダーを配列の要素で順次置換する。
+
+v.	メッセージの返却
+置換処理済みのメッセージを返却する。
+
+(オ)	例外
+なし。
+
+3.2.	プロパティ／環境変数
+なし。
+ 
+4.	利用例
+本機能の利用例を以下に示す。
+4.1.	アプリケーション起動時のメッセージ定義読み込み
+単一のインスタンスでメッセージを管理するため、メッセージ定義の読み込みは1か所のみで行う必要がある。読み込み箇所に関しては、メッセージ機能を使用する前に初期化を行うため、アプリケーション起動時の処理を記述するmain.tsに実装することを推奨する。複数の業務や機能に分けてメッセージ定義する場合は、それらを結合してからMessageクラスのstaticメソッドであるloadメソッドに渡す。
+また、loadメソッドを複数回実行すると、メッセージ定義のリスト全体が最後に読み込んだメッセージ定義で上書きされることに注意が必要である。
+	main.tsの実装例
 ```
-PS C:\Users\taashitnm\Documents\poc> npm  i
-npm warn deprecated @storybook/jest@0.2.3: In Storybook 8, this package functionality has been integrated to a new package called @storybook/test, which uses Vitest APIs for an improved experience. When upgrading to Storybook 8 with 'npx storybook@latest upgrade', you will get prompted and will get an automigration for the new package. Please migrate when you can.
-npm warn deprecated @storybook/testing-library@0.2.2: In Storybook 8, this package functionality has been integrated to a new package called @storybook/test, which uses Vitest APIs for an improved experience. When upgrading to Storybook 8 with 'npx storybook@latest upgrade', you will get prompted and will get an automigration for the new package. Please migrate when you can.
-npm warn deprecated @storybook/expect@28.1.3-5: In Storybook 8, this package functionality has been integrated to a new package called @storybook/test, which uses Vitest APIs for an improved experience. When upgrading to Storybook 8 with 'npx storybook@latest upgrade', you will get prompted and will get an automigration for the new package. Please migrate when you can.
+import { createApp } from 'vue'
+import App from './App.vue'
+import { Message } from 'yysk-client-fw' // (1)
+import { COMMON_MESSAGE_LIST } from './usecases/shared/messages/messageList'
+import { VACCINATION_MESSAGE_LIST } from './usecases/vaccination/shared/messages/messageList'
+import { BILLING_MESSAGE_LIST } from './usecases/billing/shared/messages/messageList'
 
-added 1044 packages, and audited 1045 packages in 2m
+// スプレッド構文を使用してメッセージ定義を結合
+const MESSAGE_LIST = {
+  ...COMMON_MESSAGE_LIST,
+  ...VACCINATION_MESSAGE_LIST,
+  ...BILLING_MESSAGE_LIST
+}
+Message.load(MESSAGE_LIST) // (2)
 
-200 packages are looking for funding
-  run `npm fund` for details
-
-found 0 vulnerabilities
-PS C:\Users\taashitnm\Documents\poc> 
+const app = createApp(App)
+// app.use等のアプリケーションの設定を記載
+app.mount('#app')
 ```
+(1)	メッセージ機能を使用するために必要なライブラリをインポート。
+(2)	結合したメッセージ定義を読み込む。
+ 
+4.2.	コンポーネントでのメッセージ取得
+MessageクラスのstaticメソッドであるgetMessageメソッドにより、メッセージIDを指定してメッセージを取得する。必要に応じてプレースホルダーの置換も可能である。
+	getMessage()の実装例
 ```
-  "overrides": {
-    "storybook": "$storybook",
-    "glob": "^10.4.5",
-    "rimraf": "^5.0.10"
-  }
-  ```
-PS C:\Users\taashitnm\Documents\poc> npm ls inflight
->> npm ls rimraf
->> npm ls glob
->>
-poc@1.0.0 C:\Users\taashitnm\Documents\poc
-├─┬ reg-keygen-git-hash-plugin@0.14.3
-│ └─┬ reg-suit-util@0.14.3
-│   └─┬ glob@7.2.3
-│     └── inflight@1.0.6
-└─┬ reg-suit@0.14.4
-  └─┬ reg-suit-core@0.14.4
-    └─┬ reg-cli@0.18.10
-      ├─┬ del@6.1.1
-      │ └─┬ rimraf@3.0.2
-      │   └─┬ glob@7.2.3
-      │     └── inflight@1.0.6 deduped
-      └─┬ glob@7.2.3
-        └── inflight@1.0.6 deduped
+<script setup lang="ts">
+import { ref } from 'vue'
+import { Message } from 'yysk-client-fw' // (1)
 
-poc@1.0.0 C:\Users\taashitnm\Documents\poc
-└─┬ reg-suit@0.14.4
-  └─┬ reg-suit-core@0.14.4
-    ├─┬ reg-cli@0.18.10
-    │ └─┬ del@6.1.1
-    │   └── rimraf@3.0.2
-    └── rimraf@5.0.10
+const message1 = ref('')
+const message2 = ref('')
 
-poc@1.0.0 C:\Users\taashitnm\Documents\poc
-├─┬ @testing-library/vue@8.1.0
-│ └─┬ @vue/test-utils@2.4.6
-│   └─┬ js-beautify@1.15.4
-│     └── glob@10.4.5 deduped
-├─┬ @vitest/coverage-istanbul@3.1.4
-│ └─┬ test-exclude@7.0.1
-│   └── glob@10.4.5
-├─┬ reg-keygen-git-hash-plugin@0.14.3
-│ └─┬ reg-suit-util@0.14.3
-│   └── glob@7.2.3
-├─┬ reg-suit@0.14.4
-│ └─┬ reg-suit-core@0.14.4
-│   ├─┬ reg-cli@0.18.10
-│   │ ├─┬ del@6.1.1
-│   │ │ └─┬ rimraf@3.0.2
-│   │ │   └── glob@7.2.3
-│   │ └── glob@7.2.3
-│   └─┬ rimraf@5.0.10
-│     └── glob@10.4.5 deduped
-└─┬ tailwindcss@3.4.17
-  └─┬ sucrase@3.35.0
-    └── glob@10.4.5 deduped
+const checkType = () => {
+  message1.value = Message.getMessage('i.A01.001') // (2)
+  message2.value = Message.getMessage(' i.A01.002', ['置換文字']) // (3)
+}
+</script>
+```
+(1)	メッセージ機能を使用するために必要なライブラリをインポート。
+(2)	パラメータ置換が不要なメッセージを取得。getMessage()の第1引数にメッセージIDを指定。
+(3)	パラメータ置換が必要なメッセージを取得。getMessage()の第2引数に配列を指定し、メッセージ内の{0}, {1}...のプレースホルダーを配列の要素で順次置換する。
+ 
+5.	その他
+5.1.	システム基盤とのインタフェース
+なし。
 
-先ほども話した「Storeの永続化でBASE64を2回かけて難読化する」って話があったと思うんですが、  
-それで少し調べていたところ `javascript-obfuscator` というライブラリがありました。
-
-これは、ビルド後のJavaScriptファイルを対象に、コード全体を自動的に難読化できるものです。  
-BASE64のような単純な文字列変換よりも、構文ごと崩してくれるので可読性がかなり下がります。  
-例えば変数名が全部 `_0xabc123` みたいな形に置き換わったりして、  
-ぱっと見で内容が分からなくなるレベルです。
-
-もちろんセキュリティ対策としては「気休めレベル」ではあるんですが、   
-BASE64の代わりにこれを使うのも一つの手かなと思いました。
-
-参考: 
-・https://www.npmjs.com/package/javascript-obfuscator
-・https://qiita.com/u83unlimited/items/970f819d1fafa325bfbf
-・https://yururi-do.com/javascript-obfuscator-2022/
-・https://scan.netsecurity.ne.jp/article/2024/09/25/51660.html
-
-https://pmwbv-portalv001.almcloud.nttdata.com/ads/7143tfcDmy/yysk/_workitems/edit/7303/
-
-http://gitlab.yysk.cicd.local/takahashitnm/poc
-http://gitlab.yysk.cicd.local/takahashitnm/poc
-あとで契約する
-https://carparking.jp/detail/1087662/
-
-WSLセットアップガイド作成
-
-Evernoteに環境構築手順に関する内容を随時記載しておいて、新規PCがきたときに設定を再現できるようにする（CursorのオートコンプリートをOFFとか）。
-
-ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
-まさに 「AIコンシェルジュ」 とか 「AIエージェントアシスタント」 の領域ですね。
-特に、音声での会話＋IoT接続＋PC操作＋スクリプト実行＋常時スタンバイ という点を組み合わせると、次のような技術を組み合わせることになります。
-
-実現に必要な主要技術
-1. 音声インターフェース（VUI）
-音声認識（ASR）: Whisper（OpenAI）、Google Speech-to-Text など
-音声合成（TTS）: Coqui TTS、Google TTS、Amazon Polly など
-音声処理エンジン: Mycroft、Rhasspy（オープンソース）、Alexa、Google Assistant など
-2. 自律エージェント（AIエージェント）
-対話モデル: LLM（GPT-4、Claude、Geminiなど）
-会話管理: Rasa、LangChain、Chatbot Frameworks
-スクリプト実行: Python+LangChain（PC操作のオートメーション）
-3. IoTデバイス連携
-プロトコル: MQTT、WebSockets
-デバイス制御: Home Assistant、Node-RED、Raspberry Pi
-API接続: スマート家電のAPIを活用
-4. キャラクターのモデリング & アニメーション
-3Dキャラ: VRM（Vroidモデル）、MetaHuman
-アニメーション: Live2D、Unity＋VRChat
-ボイス同期: Coqui TTS、VITS（VITS-fast）での発話連携
-5. UI/UX（常時スタンバイ＆チャット対応）
-Web UI: React + WebRTCでブラウザUI
-PC UI: Electronでデスクトップアプリ化
-スマホ連携: PWA（Progressive Web App）
-理想のAIコンシェルジュの動き
-ユーザーの呼びかけ（音声 or チャット）に反応
-
-例: 「〇〇、今の予定は？」
-処理: 音声認識→対話AI処理→スケジュール取得→音声返答
-PCでスクリプトを実行
-
-例: 「このPythonスクリプトを動かして」
-処理: 音声解析→PC内のスクリプト実行→結果通知
-IoTデバイス制御
-
-例: 「エアコンをつけて」「部屋の照明を青に」
-処理: APIまたはMQTTでデバイス操作
-仮想キャラクターとして発話・表情変化
-
-動作例: 声に合わせて口パク、表情変化、ジェスチャー
-技術: VRM + WebRTC or Live2D + Unity
-これを作るなら？
-第一段階: チャット＋スクリプト実行 → AIエージェントとして会話処理
-第二段階: VUI（音声入力/出力）追加
-第三段階: IoT連携 & キャラクター表現強化（VRM or Live2D）
-これ、最終的には 「未来のAIアシスタント」 みたいな感じになりそうですね！
-実際に開発進めるなら、どの部分から手をつけるか考えてみてもいいかも！
-
-
-
-
-
+5.2.	利用するDBテーブル
+なし。
