@@ -1,5 +1,278 @@
 
 
+
+予防接種事務デジタル化に係る
+予診情報・予防接種記録管理／請求支払システムの
+設計・開発及び運用・保守業務一式
+
+ソフトウェアフレームワーク機能設計書
+
+FW_S_CLIENT_12
+セッション管理
+
+
+
+
+第1.1版
+ 
+改版履歴
+版数	制改訂
+日付	変更
+箇所	変更理由・変更内容	変更者	承認者
+1.0	2025/03/24	-	初版発行	NTTD米山	NTTD 馬場
+1.1	2025/05/02	-	詳細設計の反映	NTTD米山	NTTD 馬場
+					
+					
+					
+ 
+目次
+1.	機能概要	1
+1.1.	概要	1
+1.2.	API一覧	1
+2.	機能実現方式	1
+2.1.	利用ライブラリ	1
+2.2.	コンポーネント構成	1
+2.3.	実現方式	2
+2.4.	同一オリジンポリシー	2
+3.	機能詳細	2
+3.1.	API仕様	2
+3.2.	プロパティ／環境変数	2
+4.	利用例	3
+4.1.	ストアの実装	3
+4.2.	ストアで管理する状態の操作処理の実装	4
+4.3.	ストアで管理する状態の初期化について	7
+4.3.1.	初期化処理の実装	7
+4.3.2.	ログイン時の初期化処理の実装	8
+5.	その他	10
+5.1.	システム基盤とのインタフェース	10
+5.2.	利用するDBテーブル	10
+
+ 
+ 
+1.	機能概要
+1.1.	概要
+ユーザのブラウザ上での一連の操作において画面間で引き継ぎアクセスが必要な一時保存情報を管理する機能を実現する。
+
+1.2.	API一覧
+Vue.js の状態管理ライブラリを利用する方針のため、独自の API提供は行わない。
+詳細はPiniaおよびPinia Plugin Persitedstateのドキュメントを参照のこと。
+
+2.	機能実現方式
+2.1.	利用ライブラリ
+本機能が利用する主なライブラリを以下に示す。
+
+ライブラリ名	説明
+pinia	Vue.js用の状態管理ライブラリ
+pinia-plugin-persistedstate	Piniaの状態をブラウザに永続化するプラグイン
+
+2.2.	コンポーネント構成
+なし。
+
+ 
+2.3.	実現方式
+Piniaを使用してデータ管理を実装する。Piniaは、Vue.js用の状態管理ライブラリである。
+Piniaを採用した主な理由は以下となる。
+1.	Vue.js公式が現在推奨する状態管理ライブラリである
+2.	従来の状態管理ライブラリであるVuexと比較して、シンプルな実装と型推論などのTypeScriptのサポートが充実している
+3.	Vue標準機能と比較して、ストアを機能単位で分割できるため、コードの管理や修正が容易である
+4.	VuexやVue標準機能と比較して、Vue.js用の開発者ツール（Vue DevTools）での状態変更の追跡やデバッグ機能が充実している
+なお、Piniaのデータはメモリ上に保持されるため、画面リロード時にデータは初期化され、タブ間共有されない。そのため、pinia-plugin-persistedstateプラグインを使用してデータをWeb Storage APIのlocalStorageと同期することで、画面リロード時のデータ復元やタブ間共有を実現する。不要なセッションのデータはログイン時にストアの初期化を行う。
+localStorageの詳細は Window: localStorage プロパティ を参照。
+
+2.4.	同一オリジンポリシー
+ブラウザの同一オリジンポリシーにより、localStorageで共有ができるのは共通のドメインから取得した情報に原則限る。
+
+3.	機能詳細
+3.1.	API仕様
+詳細はPiniaおよびPinia Plugin Persitedstateのドキュメントを参照のこと。
+
+3.2.	プロパティ／環境変数
+なし。
+4.	利用例
+本機能の利用例を以下に示す。
+
+4.1.	ストアの実装
+ストアの定義の実装例を示す。
+VueのOption APIと同じ方法もあるが、ここでは、Vueの実装方法と合わせてComposite APIと同じ方法で定義する例を示す。なお、Composite APIの場合は、Option APIのときに提供させる$resetメソッドがないため、リセットするメソッドは独自に実装する。
+```
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+export const useStore = defineStore('storeName', () => {
+  // refで、ストアで管理する状態データ(state)を定義
+  const user = ref('')
+  // computedプロパティで算出データを取得する関数(getter)を定義
+  const isLoggedIn = computed((): boolean => { // ログイン済みかどうかを返す算出プロパティ
+    return !!user.value
+  })
+  // 状態を更新するアクションをfunctionで定義
+  function reset() { // ストア情報をリセットするメソッド
+    user.value = null
+  }
+
+  return { user, isLoggedIn, reset } // 外部から使用したいデータ、算出プロパティ、関数を記載
+}, {
+  persist: true  // (1)
+})
+```
+(1).	永続化オプション。trueを設定することで、Pinia Plugin Persistedstateの機能によりブラウザのローカルストレージに保存される。
+永続化オプションに関してより細かい設定が必要な場合、Pinia Plugin Persitedstateのドキュメントを参照すること。
+ 
+4.2.	ストアで管理する状態の操作処理の実装
+	ユーザ検索に関する状態管理を行うストアの設定例
+```
+import { defineStore } from "pinia"
+import { ref } from "vue"
+import type { SearchUser } from "../types/searchUsers" // 検索結果の型定義
+
+export const useStore = defineStore("storeName", () => {
+    const store = useStore(); // 自分自身のストアを取得
+    // ストアで管理するデータを定義
+    const userId = ref("")
+    const userName = ref("")
+    const email = ref("")
+    const results = ref<SearchUser[]>([])
+
+    // 同期処理メソッドを記載
+    function syncLocalStorage() {
+      ※次ページ参照 // (1)
+    }
+
+    // リセットメソッドを記載
+    function reset() {
+      store.$patch({
+        userId: "",
+        userName: "",
+        email: "",
+        results: [],
+      })
+    }
+    return { userId, userName, email, results, syncLocalStorage, reset }
+  },
+  {
+    persist: true, // 永続化オプション
+  }
+)
+```
+(1).	同期処理メソッドの処理について
+Pinia Plugin Persistedstateは、ブラウザの更新ボタンによる再描画や、初期画面表示でのアプリケーション起動時（JavaScriptが完全に再読み込みされる時）にlocalStorageから状態を自動で復元する。
+
+SPAでの画面遷移時は、単なるコンポーネントの切り替えであり、上記のようなJavaScriptの再読み込みは発生しないため、localStorageに対する自動的な同期は行われない。入力した内容を、別タブで表示している画面へも共有・反映したい等のケースでは、ストアが管理するデータの最新状態を反映する同期処理を実装し、明示的に呼び出す必要がある。
+```
+    function syncLocalStorage() {
+      // localStorageから'userSearch'というキーで保存されているデータを取得。
+      const savedState = localStorage.getItem("userSearch")
+
+      if (savedState) {
+        // localStorageから取得した文字列データをJavaScriptのオブジェクトに変換。
+        const state = JSON.parse(savedState)
+
+        // 全状態まとめて同期する場合の同期方法
+        store.$patch({state})
+
+        // 特定の状態を同期する場合の同期方法
+        store.$patch({
+          userId: state.userId || "",
+          userName: state.userName || "",
+          email: state.email || "",
+        })
+      }
+    }
+
+```
+ 
+	ユーザ検索画面の<script>部分の実装例
+```
+import { useUserSearchStore } from "../stores/userSearch" // ストアのインポート
+
+const userSearchStore = useUserSearchStore() // ストアのインスタンスを生成
+userSearchStore.syncLocalStorage() // ストアの同期処理を実行
+
+// (1)
+userSearchStore.userId = "user1"
+userSearchStore.results = [
+  { userId: "user1", userName: "山田太郎", email: "yamada@example.com" },
+  { userId: "user2", userName: "鈴木一郎", email: "suzuki@example.com" },
+]
+
+// (2)
+const storeUserId = userSearchStore.userId
+const displayResults = userSearchStore.results
+```
+(1).	ストアで管理している状態を更新。
+(2).	ストアで管理している状態を参照。
+ 
+4.3.	ストアで管理する状態の初期化について
+4.3.1.	初期化処理の実装
+不要なセッションのデータはストアの初期化を行う。初期化処理は各ストアで定義する。
+	登録完了画面の<script>部分の実装例
+```
+import { useRegisterUserStore } from "../stores/registerUser"
+
+const store = useRegisterUserStore()
+
+store.reset() // (1)
+```
+(1).	ストアで定義した初期化メソッドを使用して、ストア内のすべての状態を初期化する。
+ 
+4.3.2.	ログイン時の初期化処理の実装
+ストアは永続化されているため、ログイン時に前回ログイン時の引き継ぎ不要なデータ（表示するページ数など）を全て初期化する必要がある。そのため、業務単位でストアを一括で初期化するモジュールを作成し、ログイン時に実行する必要がある。
+
+1.	ストア初期化モジュールの実装例
+```
+// (1)
+import { useRecipientStore } from "../stores/recipientStore"
+import { useQuestionnaireStore } from "../stores/questionnaireStore"
+import { useRecordStore } from "../stores/recordStore"
+
+// (2)
+export const resetVaccinationStores = () => {
+  // (3)
+  const recipientStore = useRecipientStore()
+  const questionnaireStore = useQuestionnaireStore()
+  const recordStore = useRecordStore()
+
+  // (4)
+  recipientStore.reset()
+  questionnaireStore.reset()
+  recordStore.reset()
+}
+```
+(1).	初期化が必要なストアをインポート。
+(2).	リセット用の関数を定義。
+(3).	各ストアのインスタンスを取得。
+(4).	各ストアで定義した初期化処理を実施。
+ 
+2.	ログイン処理の<script>部分の実装例
+```
+// (1)
+import { resetVaccinationStores } from "../utils/resetVaccinationStores"
+import { resetBillingStores } from "../utils/resetBillingStores"
+
+const login = async () => {
+  try {
+    // ログイン処理
+
+    // (2)
+    resetVaccinationStores()
+    resetBillingStores()
+
+    // ログイン後の画面遷移
+  } catch (error) {
+    // エラー処理
+  }
+}
+```
+(1).	業務単位でモジュール化した初期化処理をインポート。
+(2).	ストア初期化関数を実行。
+ 
+5.	その他
+5.1.	システム基盤とのインタフェース
+なし。
+5.2.	利用するDBテーブル
+なし。
+
+
+
 ---------------------------------------------------------------------------------------------------------------------------
 
 予防接種事務デジタル化に係る
