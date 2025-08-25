@@ -1,5 +1,5 @@
 
-
+http://gitlab.yysk.cicd.local/business-team/yysk-client-business/-/merge_requests/99
 
 予防接種事務デジタル化に係る
 予診情報・予防接種記録管理／請求支払システムの
