@@ -1,4 +1,27 @@
+【AP基盤問合せ】開発ガイドラインのPlaywright記載方法について
+【背景】
+表題の件につきまして、Playwrightの記載方法を確認させていただきたく存じます。
+開発ガイドラインのサンプルコードにて、
+server.use(〇〇)を使用したハンドラの切り替え処理がございますが、
+mock-e2e、vrt共にガイドの通り使用してもハンドラの切り替えが出来ない状況です。
 
+【問合せ内容】
+サンプルで作成された以下のブランチを拝見させていただきましたが、
+mocksとstubsのデータの中身が同じでしたので、そちらの環境でハンドラの切り替えが出来ているか、
+お手数ですが一度ご確認いただけないでしょうか。
+リポジトリ：yysk-sample-client
+ブランチ：feature/migrate-vrt-mocke2e-from-poc
+
+また、勘違いでしたら申し訳ないのですが、
+個人的に調べたところ、ブラウザで動いているmswにはnode用のserver.use(〇〇)が存在しないため、
+Playwrightで使用できないような記載が見受けられました。
+mocks/server.tsではなく、mocks/browser.tsを使用する可能性がございます。
+※developブランチに追加の反映が発生する場合、
+pre-commitでPlaywrightのエラーが出るので、
+可能であればconfig/vitest.config.ts等への記載もdevelopブランチに反映いただけますと幸いです。
+
+以下にこちらで作成中の実装がございます。
+http://gitlab.yysk.cicd.local/business-team/yysk-client-business/-/merge_requests/99
 http://gitlab.yysk.cicd.local/business-team/yysk-client-business/-/merge_requests/99
 
 予防接種事務デジタル化に係る
