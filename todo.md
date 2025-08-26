@@ -1,3 +1,14 @@
+【私回答】
+ご指摘ありがとうございます。確認しましたが、結論としてはご認識のとおりです。  
+`server.use(...)` は Node 用の msw（msw/node）向けの API であり、ブラウザ環境で動作する Playwright の mock-e2e では利用できません。  
+そのため、Playwright でのハンドラ切り替えは `mocks/server.ts` ではなく `mocks/browser.ts` を起点に起動している Service Worker に対して行う必要があります。  
+
+なお、サンプルブランチで `mocks` 配下と `stubs` 配下の中身が同一になっていたのは、単にデータを重複して配置してしまっていたためです。切り替え機能自体が無効というわけではなく、今後は `stubs` に統一して管理する方針です。  
+
+開発ガイドラインについては、「ユニットテスト（Vitest等）では `server.use(...)` を使うが、mock-e2e／VRT はブラウザ側の `worker.use(...)` を使う」という点が分かるよう、追記修正を行います。  
+また、ご要望の `vitest.config.ts` の設定についても、必要に応じて develop ブランチに反映いたします。  
+
+
 ご指摘ありがとうございます。確認しましたが、結論としてはご認識のとおりです。  
 `server.use(...)` は Node 用の msw（msw/node）向けの API であり、ブラウザ環境で動作する Playwright の mock-e2e では利用できません。  
 そのため、Playwright でのハンドラ切り替えは `mocks/server.ts` ではなく `mocks/browser.ts` を起点に起動している Service Worker に対して行う必要があります。  
