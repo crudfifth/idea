@@ -1,3 +1,5 @@
+https://pmwbv-portalv001.almcloud.nttdata.com/ads/7143tfcDmy/yysk/_git/guideline/pullrequest/87
+
 ご指摘ありがとうございます。
 確認しましたが、結論としてはご認識のとおりです。  
 `server.use(...)` は Node 用の msw（msw/node）向けの API なので、
