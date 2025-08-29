@@ -1,3 +1,5 @@
+Invoke-WebRequest -Uri "https://perplexity.ai" -Method Head
+
 https://pmwbv-portalv001.almcloud.nttdata.com/ads/7143tfcDmy/yysk/_git/guideline/pullrequest/87
 
 ご指摘ありがとうございます。
