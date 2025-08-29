@@ -1,3 +1,26 @@
+了解。技術的なポイントだけ、シンプルに確認＆補足します。
+
+VITE_ENV の件
+
+認識合っています。クライアントから参照する環境値は VITE_ プレフィックスを付けて .env.[mode] に書きます。コード側は import.meta.env.VITE_ENV で参照します。
+
+NODE_ENV は Vite/ツールチェーン内部向け（development/production/test の3値想定）なので、触らない／使わないでOK。
+
+mode の名称
+
+dev/mnt/stg/prd のような任意文字列に変更可能です。.env.dev / .env.mnt / .env.stg / .env.prd を用意してください。
+
+CIのビルド
+
+各環境用は vite build --mode <env>（例：--mode stg）。これで該当 .env.<env> が読み込まれます。
+
+DEPLOYMENT_ENV など独自の環境変数は、クライアントで使うなら VITE_ を付ける（例：VITE_DEPLOYMENT_ENV）。付けないとクライアントからは見えません。
+
+preview
+
+preview はビルド済み dist を配信するだけなので、--mode 指定は不要です。vite build --mode stg → vite preview の順でOK。
+
+以上。間違いは特にありませんが、もし preview --mode ... としていたらそこだけ外してください。
 調査用コマンド
 Invoke-WebRequest -Uri "(例)https://perplexity.ai" -Method Head
 
