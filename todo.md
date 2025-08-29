@@ -1,68 +1,8 @@
 Invoke-WebRequest -Uri "https://perplexity.ai" -Method Head
-
-https://pmwbv-portalv001.almcloud.nttdata.com/ads/7143tfcDmy/yysk/_git/guideline/pullrequest/87
-
-ご指摘ありがとうございます。
-確認しましたが、結論としてはご認識のとおりです。  
-`server.use(...)` は Node 用の msw（msw/node）向けの API なので、
-ブラウザ環境で動作する Playwright の mock-e2e では利用できません。  
-そのため、Playwright でのハンドラ切り替えは `mocks/server.ts` ではなく
-`mocks/browser.ts` を起点に起動している Service Worker に対して行う必要がありました。  
-
-なお、サンプルブランチで `mocks` 配下と `stubs` 配下の中身が同一になっていたのは、単にデータを重複して配置してしまっていたためです。切り替え機能自体が無効というわけではなく、今後は `stubs` に統一して管理する方針です。
-切り替えを有効にするには、成功・失敗・空データといった異なるハンドラを `mocks/browser.ts` 側で定義して、それを Playwright のテストコードから `worker.use(...)` 経由で適用する必要があります。  
-
-開発ガイドラインの該当箇所については、「ユニットテスト（Vitest等）では `server.use(...)` を使うが、
-mock-e2e／VRT はブラウザ側の `worker.use(...)` を使う」という点が分かるよう、追記修正します。  
-
-また、ご要望の `vitest.config.ts` の設定反映についても、develop ブランチ側に適用を検討いたします。  
-
-
-【私回答】
-ご指摘ありがとうございます。確認しましたが、結論としてはご認識のとおりです。  
-`server.use(...)` は Node 用の msw（msw/node）向けの API であり、ブラウザ環境で動作する Playwright の mock-e2e では利用できません。  
-そのため、Playwright でのハンドラ切り替えは `mocks/server.ts` ではなく `mocks/browser.ts` を起点に起動している Service Worker に対して行う必要があります。  
-
-なお、サンプルブランチで `mocks` 配下と `stubs` 配下の中身が同一になっていたのは、単にデータを重複して配置してしまっていたためです。切り替え機能自体が無効というわけではなく、今後は `stubs` に統一して管理する方針です。  
-
-開発ガイドラインについては、「ユニットテスト（Vitest等）では `server.use(...)` を使うが、mock-e2e／VRT はブラウザ側の `worker.use(...)` を使う」という点が分かるよう、追記修正を行います。  
-また、ご要望の `vitest.config.ts` の設定についても、必要に応じて develop ブランチに反映いたします。  
-
-
-ご指摘ありがとうございます。確認しましたが、結論としてはご認識のとおりです。  
-`server.use(...)` は Node 用の msw（msw/node）向けの API であり、ブラウザ環境で動作する Playwright の mock-e2e では利用できません。  
-そのため、Playwright でのハンドラ切り替えは `mocks/server.ts` ではなく `mocks/browser.ts` を起点に起動している Service Worker に対して行う必要があります。  
-
-現状サンプルブランチで `mocks` と `stubs` の中身が同じになっていたのは、単に切り替え差分を用意していなかったためで、切り替えができていないわけではありません。実際に切り替えを有効にするには、成功・失敗・空データといった異なるハンドラを `mocks/browser.ts` 側で定義して、それを Playwright のテストコードから `worker.use(...)` 経由で適用する必要があります。  
-
-開発ガイドラインの該当箇所については、「ユニットテスト（Vitest等）では `server.use(...)` を使うが、mock-e2e／VRT はブラウザ側の `worker.use(...)` を使う」という点が分かるよう、追記修正します。  
-また、ご要望の `vitest.config.ts` の設定反映についても、develop ブランチ側に適用を検討いたします。  
-
-【AP基盤問合せ】開発ガイドラインのPlaywright記載方法について
-【背景】
-表題の件につきまして、Playwrightの記載方法を確認させていただきたく存じます。
-開発ガイドラインのサンプルコードにて、
-server.use(〇〇)を使用したハンドラの切り替え処理がございますが、
-mock-e2e、vrt共にガイドの通り使用してもハンドラの切り替えが出来ない状況です。
-
-【問合せ内容】
-サンプルで作成された以下のブランチを拝見させていただきましたが、
-mocksとstubsのデータの中身が同じでしたので、そちらの環境でハンドラの切り替えが出来ているか、
-お手数ですが一度ご確認いただけないでしょうか。
-リポジトリ：yysk-sample-client
-ブランチ：feature/migrate-vrt-mocke2e-from-poc
-
-また、勘違いでしたら申し訳ないのですが、
-個人的に調べたところ、ブラウザで動いているmswにはnode用のserver.use(〇〇)が存在しないため、
-Playwrightで使用できないような記載が見受けられました。
-mocks/server.tsではなく、mocks/browser.tsを使用する可能性がございます。
-※developブランチに追加の反映が発生する場合、
-pre-commitでPlaywrightのエラーが出るので、
-可能であればconfig/vitest.config.ts等への記載もdevelopブランチに反映いただけますと幸いです。
-
-以下にこちらで作成中の実装がございます。
-http://gitlab.yysk.cicd.local/business-team/yysk-client-business/-/merge_requests/99
-http://gitlab.yysk.cicd.local/business-team/yysk-client-business/-/merge_requests/99
+ソフトウェアフレームワーク機能設計書一覧
+・FW_S_CLIENT_12 セッション管理
+・FW_S_CLIENT_08 AJAXクライアント
+---------------------------------------------------------------------------------------------------------------------------
 
 予防接種事務デジタル化に係る
 予診情報・予防接種記録管理／請求支払システムの
