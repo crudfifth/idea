@@ -6,14 +6,14 @@ project-root/
 │  ├─ main.ts                            # エントリポイント（薄い起動コードだけ）
 │  │
 │  ├─ app/                               # アプリ全体のフレーム・起動周り
-│  │  ├─ router/                         # ルーティング定義
-│  │  │  └─ guards/                      # 認可チェック・ログイン必須などのルートガード
+│  │  ├─ router/                         # ルーティング定義（バレル）
+│  │  │  └─ guards/                      # 認可チェック・ログイン必須 等のルートガード
 │  │  ├─ layout/                         # App全体の枠（Header / Sidebar / Main / Footer）
 │  │  ├─ errors/                         # グローバルエラーページ・エラーハンドリングUI
 │  │  └─ providers/                      # DI, Queryクライアント, i18n などのプロバイダ初期化
 │  │
 │  ├─ components/                        # 業務ロジックを持たない汎用UIコンポーネント
-│  │  ├─ ui/                             # BaseButton, BaseInput, Icon など
+│  │  ├─ ui/                             # BaseButton, BaseInput, Icon 等
 │  │  └─ layout/                         # Header, Sidebar, Footer など見た目だけのレイアウト部品
 │  │
 │  ├─ features/                          # 各 <domain> ごとの業務UI＋業務ロジック
@@ -25,16 +25,17 @@ project-root/
 │  │     │  ├─ composables/              # <domain> 画面専用のUIロジック (useXxx 系)
 │  │     │  └─ styles/                   # <domain> 専用スタイル（スコープCSS, CSS Modules 等）
 │  │     │
-│  │     └─ logic/                       # <domain> 専用の“ロジックだけ”（UIは持たない）
-│  │        ├─ types/                    # DTOなど、<domain> 専用の型定義
-│  │        ├─ models/                   # <domain> モデル／エンティティ（DTO→Model変換＋振る舞い）
-│  │        ├─ services/                 # ユースケース（ビジネスロジック）例: executeLogin, updateProfile
-│  │        ├─ repositories/             # <domain> 向けAPIクライアント層（Axios 等）
-│  │        ├─ stores/                   # <domain> 専用状態管理（Pinia ストア）
-│  │        ├─ validators/               # <domain> のフォーム／値チェックロジック
-│  │        ├─ messages/                 # <domain> 専用メッセージ（エラー文言・ラベル等）
-│  │        ├─ constants/                # <domain> 専用定数（ステータス, ロール, フラグ値 等）
-│  │        └─ errors/                   # <domain> 専用エラー型・例外（ドメインエラー・バリデーションエラー）
+│  │     ├─ logic/                       # <domain> 専用の“ロジックだけ”（UIは持たない）
+│  │     │  ├─ types/                    # DTOなど、<domain> 専用の型定義
+│  │     │  ├─ models/                   # <domain> モデル／エンティティ（DTO→Model変換＋振る舞い）
+│  │     │  ├─ services/                 # ユースケース（ビジネスロジック）例: executeLogin, updateProfile
+│  │     │  ├─ repositories/             # <domain> 向けAPIクライアント層（Axios 等）
+│  │     │  ├─ stores/                   # <domain> 専用状態管理（Pinia ストア）
+│  │     │  ├─ validators/               # <domain> のフォーム／値チェックロジック
+│  │     │  ├─ messages/                 # <domain> 専用メッセージ（エラー文言・ラベル等）
+│  │     │  ├─ constants/                # <domain> 専用定数（ステータス, ロール, フラグ値 等）
+│  │     │  └─ errors/                   # <domain> 専用エラー型・例外（ドメインエラー・バリデーションエラー）
+│  │     └─ router/                      # <domain> 専用のルーティング定義
 │  │
 │  ├─ shared/                            # 全ドメイン横断で使い回す共通ロジック＆スタイル
 │  │  ├─ types/                          # 共通DTO・型定義
@@ -49,7 +50,7 @@ project-root/
 │  │  ├─ messages/                       # 共通メッセージ（汎用エラー, 共通ラベル 等）
 │  │  ├─ errors/                         # 共通エラー型（HttpError, AppError などロジック層の例外）
 │  │  ├─ utils/                          # 汎用関数（日付フォーマット, 配列操作, 文字列ユーティリティ 等）
-│  │  ├─ http/                           # Axiosインスタンスや fetch ラッパなどHTTPクライアント共通層
+│  │  ├─ http/                           # Axiosインスタンスや fetch ラッパ等 HTTPクライアント共通層
 │  │  └─ styles/                         # 共通スタイル（テーマ変数, デザイントークン, 汎用ユーティリティクラス）
 │  │
 │  └─ mocks/                             # 開発用モック一式（MSW）
@@ -65,7 +66,7 @@ project-root/
 │  ├─ stories/                           # グローバル or cross-domain なストーリー
 │  └─ mocks/                             # Storybook用の専用モック
 │
-├─ __test__/                             # E2E / 結合 / ユニットなどテスト用ディレクトリ
+├─ __test__/                             # E2E / 結合 / ユニット 等テスト用ディレクトリ
 │  ├─ unit/                              # 単体テスト（ロジック・小さいコンポーネント）
 │  ├─ integration/                       # 結合テスト
 │  ├─ e2e/                               # E2Eテスト（Playwright）
@@ -81,7 +82,7 @@ project-root/
 │  ├─ vue/                               # Vue 設定
 │  ├─ reg-suit/                          # reg-suit 設定
 │  ├─ sonar-qube/                        # sonar-qube 設定
-│  ├─ nginx/                        # nginx 設定
+│  ├─ nginx/                             # nginx 設定
 │  └─ tailwind/                          # Tailwind 設定の分割
 │
 ├─ package-lock.json
