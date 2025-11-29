@@ -58,7 +58,7 @@ project-root/
 │     │  └─ browser/                     # ブラウザ向け MSW ワーカー設定
 │     ├─ handlers/                       # 各エンドポイントごとのハンドラ定義
 │     └─ mock-data/                      # モックに使うデータ
-│        └─ <domain>/                    # 例: ドメインごとに区切ったモックデータ
+│        └─ <domain>/                    # ドメインごとに区切ったモックデータ
 │
 ├─ __storybook__/                        # Storybook 用設定・ストーリー関連
 │  ├─ config/                            # Storybook のメイン設定ファイル群
@@ -80,8 +80,11 @@ project-root/
 │  ├─ playwright/                        # Playwright 設定の分割
 │  ├─ vue/                               # Vue 設定
 │  ├─ reg-suit/                          # reg-suit 設定
+│  ├─ sonar-qube/                        # sonar-qube 設定
+│  ├─ nginx/                        # nginx 設定
 │  └─ tailwind/                          # Tailwind 設定の分割
 │
+├─ package-lock.json
 ├─ package.json
 ├─ tsconfig.json
 └─ その他 CI 設定や dotfiles (.editorconfig, .eslintrc, .prettierrc, .github 等)
