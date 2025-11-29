@@ -1,8 +1,8 @@
 ```
 project-root/
-├─ public/                               # 静的ファイル（favicon, robots.txt, OGP画像など）
+├─ public/                               # 静的ファイル（favicon, robots.txt, OGP画像 等）
 │
-├─ src/                                  # アプリ本体
+├─ src/                                  # アプリ本体 (ソースオブトゥルース)
 │  ├─ main.ts                            # エントリポイント（薄い起動コードだけ）
 │  │
 │  ├─ app/                               # アプリ全体のフレーム・起動周り
@@ -17,9 +17,9 @@ project-root/
 │  │  └─ layout/                         # Header, Sidebar, Footer など見た目だけのレイアウト部品
 │  │
 │  ├─ features/                          # 各 <domain> ごとの業務UI＋業務ロジック
-│  │  └─ <domain>/                       # 例: user, project, matching, entry, sales, schedule...
+│  │  └─ <domain>/                       # 例: chat, project, matching, entry, sales, schedule...
 │  │     ├─ ui/                          # <domain> 専用のUI層
-│  │     │  ├─ pages/                    # ルーターから呼ばれる薄いページ（Screen を差し込むだけ）
+│  │     │  ├─ pages/                    # ルーターから呼ばれる薄いページ（Screen からコンテンツを差し込む想定）
 │  │     │  ├─ screens/                  # Main の中身となる画面本体（一覧・詳細・編集など）
 │  │     │  ├─ components/               # <domain> 専用のUI部品（カード, 行, フォームなど）
 │  │     │  ├─ composables/              # <domain> 画面専用のUIロジック (useXxx 系)
