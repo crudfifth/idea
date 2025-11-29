@@ -73,10 +73,13 @@ project-root/
 │  ├─ contruct/                          # コントラクトテスト
 │  └─ visual-regression/                 # ビジュアルリグレッション（Playwright + Chromatic or reg-suit）
 │
-├─ __config__/                           # ツール系設定をまとめたい場合の置き場
-│  ├─ vite/                              # Vite周りの設定
+├─ __config__/                           # ツール系設定
+│  ├─ vite/                              # Vite 設定
 │  ├─ vitest/                            # テストランナー設定
 │  ├─ eslint(biome)/                     # ESLint(またはbiome) 設定の分割
+│  ├─ playwright/                        # Playwright 設定の分割
+│  ├─ vue/                               # Vue 設定
+│  ├─ reg-suit/                          # reg-suit 設定
 │  └─ tailwind/                          # Tailwind 設定の分割
 │
 ├─ package.json
