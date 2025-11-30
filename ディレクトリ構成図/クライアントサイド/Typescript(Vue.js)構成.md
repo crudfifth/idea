@@ -7,7 +7,7 @@ project-root/
 │  │
 │  ├─ app/                               # アプリ全体のフレーム・起動周り
 │  │  ├─ router/                         # ルーティング定義（バレル）
-│  │  │　├─ index.ts                     # BaseButton, BaseInput, Icon 等
+│  │  │　├─ [index.ts]()                     # BaseButton, BaseInput, Icon 等
 │  │  │  └─ guards/                      # 認可チェック・ログイン必須 等のルートガード
 │  │  ├─ layout/                         # App全体の枠（Header / Sidebar / Main / Footer）
 │  │  ├─ errors/                         # グローバルエラーページ・エラーハンドリングUI
