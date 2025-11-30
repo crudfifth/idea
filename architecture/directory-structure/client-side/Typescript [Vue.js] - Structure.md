@@ -6,7 +6,7 @@
 > ...etc ミドルウェアレベルに分割統治し、業務インポートとして活用する形式が理想。\
 > ※LGWAN対応が必要な場合アプリ前段で `base href` の要素により出し分ける形式にし、\
 > 　閉域・広域ネットワークの判定を行う。
-> ※コンポーネント設計にAtomicDesignは採用しない。
+> ※コンポーネント設計に `AtomicDesign` は採用しない。
 ```
 project-root/
 ├─ public/                               # 静的ファイル（favicon, robots.txt, OGP画像 等）
