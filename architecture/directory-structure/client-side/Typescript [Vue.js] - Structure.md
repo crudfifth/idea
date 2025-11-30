@@ -1,3 +1,9 @@
+> クライアントFWはCodeArtifactから
+> - 集約例外ハンドリング
+> - HTTPクライアントのラッパ(Axios)
+> - 入力バリデーション(yup)
+> - メッセージ管理
+> ...etc を業務インポートとして利用する形が理想。
 ```
 project-root/
 ├─ public/                               # 静的ファイル（favicon, robots.txt, OGP画像 等）
