@@ -6,7 +6,7 @@ project-root/
 │  ├─ main.ts                            # エントリポイント（薄い起動コードだけ）
 │  │
 │  ├─ app/                               # アプリ全体のフレーム・起動周り
-│  │  ├─ router/                         # ルーティング定義（バレル）
+│  │  ├─ router/                         # ルーティング定義
 │  │  │　├─ index.ts                     # ルーティングのエントリ→各バレルへ
 │  │  │  └─ guards/                      # 認可チェック・ログイン必須 等のルートガード
 │  │  ├─ layout/                         # App全体の枠（Header / Sidebar / Main / Footer）
