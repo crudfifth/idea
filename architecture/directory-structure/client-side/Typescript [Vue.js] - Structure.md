@@ -91,7 +91,7 @@ project-root/
 ├─ tsconfig.json
 └─ その他 CI 設定や dotfiles (.editorconfig, .eslintrc, .prettierrc, .github 等)
 ```
-> 雑メモ・方針
+> 雑メモ・方針\
 > クライアントFWはCodeArtifactから
 > - 集約例外ハンドリング
 > - HTTPクライアントのラッパ(Axios)
