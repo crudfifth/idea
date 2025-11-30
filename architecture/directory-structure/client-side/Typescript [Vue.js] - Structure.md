@@ -1,12 +1,3 @@
-> クライアントFWはCodeArtifactから
-> - 集約例外ハンドリング
-> - HTTPクライアントのラッパ(Axios)
-> - 入力バリデーション(yup)
-> - メッセージ管理\
-> ...etc ミドルウェアレベルに分割統治し、業務インポートとして活用する形式が理想。\
-> ※LGWAN対応が必要な場合アプリ前段で `base href` の要素により出し分ける形式にし、\
-> 　閉域・広域ネットワークの判定を行う。\
-> ※コンポーネント設計に `AtomicDesign` は採用しない。
 ```
 project-root/
 ├─ public/                               # 静的ファイル（favicon, robots.txt, OGP画像 等）
@@ -100,3 +91,13 @@ project-root/
 ├─ tsconfig.json
 └─ その他 CI 設定や dotfiles (.editorconfig, .eslintrc, .prettierrc, .github 等)
 ```
+> 雑メモ・方針
+> クライアントFWはCodeArtifactから
+> - 集約例外ハンドリング
+> - HTTPクライアントのラッパ(Axios)
+> - 入力バリデーション(yup)
+> - メッセージ管理\
+> ...etc ミドルウェアレベルに分割統治し、業務インポートとして活用する形式が理想。\
+> ※LGWAN対応が必要な場合アプリ前段で `base href` の要素により出し分ける形式にし、\
+> 　閉域・広域ネットワークの判定を行う。\
+> ※コンポーネント設計に `AtomicDesign` は採用しない。
