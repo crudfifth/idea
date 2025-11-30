@@ -7,7 +7,7 @@ backend-root/
 ├─ sonar-project.properties             # SonarQube 設定（必要なら）
 │
 ├─ migrations/                          # DBマイグレーション (sqlx, refinery, goose 等)
-│  ├─ 2024XXXXXX_create_users.sql
+│  ├─ XXXXXXXXXX_create_users.sql
 │  └─ ...
 │
 ├─ src/                                 # サーバー本体
@@ -61,8 +61,8 @@ backend-root/
 │  │           ├─ response.rs           # HTTPレスポンス用型 (API契約としてのDTO)
 │  │           └─ extractors.rs         # カスタムExtractor (AuthUser, Tenant など)
 │  │
-│  └─ bin/                              # 複数バイナリがある場合 (batch, worker 等)
-│     └─ worker.rs                      # 例: ジョブキュー用ワーカー
+│  └─ bin/                              # 複数バイナリがある場合に格納 (batch, worker 等)
+│     └─ worker.rs                      # ジョブキュー用ワーカー
 │
 ├─ tests/                               # Rust 標準の integration tests
 │  ├─ health_check.rs                   # /health の疎通確認
