@@ -1,4 +1,4 @@
-```
+
 project-root/
 ├─ public/                               # 静的ファイル（favicon, robots.txt, OGP画像 等）
 │
@@ -7,6 +7,7 @@ project-root/
 │  │
 │  ├─ app/                               # アプリ全体のフレーム・起動周り
 │  │  ├─ router/                         # ルーティング定義（バレル）
+│  │  │　├─ index.ts                     # BaseButton, BaseInput, Icon 等
 │  │  │  └─ guards/                      # 認可チェック・ログイン必須 等のルートガード
 │  │  ├─ layout/                         # App全体の枠（Header / Sidebar / Main / Footer）
 │  │  ├─ errors/                         # グローバルエラーページ・エラーハンドリングUI
@@ -89,4 +90,4 @@ project-root/
 ├─ package.json
 ├─ tsconfig.json
 └─ その他 CI 設定や dotfiles (.editorconfig, .eslintrc, .prettierrc, .github 等)
-```
+
